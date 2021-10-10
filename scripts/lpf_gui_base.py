@@ -229,6 +229,19 @@ class Handler(GObject.GObject):
         button.connect("clicked", on_build_clicked_cb, pkg_name)
         return button
 
+    def pkg_install_button(self, pkg_name):
+        ''' Return Build... button for package in main window. '''
+
+        def on_build_clicked_cb(button, pkg_name):
+            ''' Build button for one package clicked callback. '''
+            do_build_cmd(self, [here('lpf'), 'rebuild', pkg_name])
+
+        button = Gtk.Button()
+        button.set_label('Install...')
+        button.set_border_width(10)
+        button.connect("clicked", on_build_clicked_cb, pkg_name)
+        return button
+
     def pkg_more_button(self, pkg_name):
         ''' Return More... button for package in main window. '''
 
