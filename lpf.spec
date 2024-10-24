@@ -1,15 +1,20 @@
-%global commit 1478565e7235c1a46e1f7762095143465440d04e
+%global commit f9032ddd26ffb33fd140e0b9d5ee72c445608077
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
+%global gitdate 20210927
+#%%global rel .%%{gitdate}.%%{shortcommit}
 
 Name:           lpf
-Version:        0.2
-Release:        1.%{shortcommit}%{?dist}
+Version:        0.3
+Release:        9%{?rel}%{?dist}
 Summary:        Local package factory - build non-redistributable rpms
 
 # Icon from iconarchive.com
 License:        MIT
-URL:            https://github.com/leamas/lpf
-Source0:        %{url}/archive/%{commit}/lpf-%{version}-%{shortcommit}.tar.gz
+URL:            https://github.com/sergiomb2/lpf
+#Source0:        %%{url}/archive/%%{commit}/lpf-%%{version}%%{?rel}.tar.gz
+Source0:        %{url}/archive/v%{version}/lpf-%{version}%{?rel}.tar.gz
+Patch1:         https://github.com/sergiomb2/lpf/commit/4f414697e6977da5fdeff7632ec3ea86ffdfbdfb.patch
+
 BuildArch:      noarch
 
 BuildRequires:  appdata-tools
@@ -25,11 +30,10 @@ Requires:       rpm-build
 Requires:       shadow-utils
 Requires:       sudo
 Requires:       dnf
-Requires:       dnf-plugins-core
 Requires:       zenity
 Requires(pre):  shadow-utils
 #for lpf-gui
-Requires:      python3-gobject-base
+Requires:       python3-gobject-base
 
 
 %description
@@ -44,8 +48,8 @@ Besides being interactive the operation is similar to akmod and dkms.
 
 
 %prep
-%autosetup -n lpf-%{commit} -p1
-rm -rf examples
+%autosetup -p1
+#-n lpf-%%{commit}
 
 
 %build
@@ -66,28 +70,12 @@ getent passwd pkg-build >/dev/null || \
         -c "lpf local package build user" pkg-build
 exit 0
 
-%post
-#/usr/bin/lpf scan || :
-
-%if 0%{?rhel} && 0%{?rhel} < 8
-/bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
-
-%postun
-if [ $1 -eq 0 ] ; then
-    /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null
-    /usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-fi
-
-%posttrans
-/usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-%endif
-
 
 %files
 %doc README.md LICENSE
 %{_bindir}/lpf
 %{_bindir}/lpf-gui
-/usr/lib/rpm/macros.d/macros.lpf
+%{_rpmconfigdir}/macros.d/macros.lpf
 %{_datadir}/lpf
 %{_datadir}/applications/lpf.desktop
 %{_datadir}/applications/lpf-gui.desktop
@@ -96,12 +84,47 @@ fi
 %{_datadir}/appdata/lpf-gui.appdata.xml
 %{_datadir}/man/man1/lpf*
 %{_libexecdir}/lpf-kill-pgroup
-# fedpkg import does not accept /etc ATM.
 %attr(440, root, root) %config(noreplace) %{_sysconfdir}/sudoers.d/pkg-build
 %attr(2775, pkg-build, pkg-build)/var/lib/lpf
 
 
 %changelog
+* Thu Jul 18 2024 Fedora Release Engineering <releng@fedoraproject.org> - 0.3-9
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_41_Mass_Rebuild
+
+* Thu Jan 25 2024 Fedora Release Engineering <releng@fedoraproject.org> - 0.3-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
+* Sun Jan 21 2024 Fedora Release Engineering <releng@fedoraproject.org> - 0.3-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
+* Thu Jul 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.3-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
+
+* Thu Jan 19 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.3-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
+
+* Thu Jul 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 0.3-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
+
+* Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 0.3-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
+
+* Wed Nov 24 2021 Sérgio Basto <sergio@serjux.com> - 0.3-2
+- Fix never end loop on lpf update (#2020711)
+
+* Sat Oct 09 2021 Sérgio Basto <sergio@serjux.com> - 0.3-1
+- Update to 0.3
+
+* Fri Sep 03 2021 Sérgio Basto <sergio@serjux.com> - 0.2-18.20210903.414f14e
+- Update to lpf-0.2.20210903.414f14e with more bug fixing
+
+* Thu Jul 22 2021 Fedora Release Engineering <releng@fedoraproject.org> - 0.2-17.20210530.d1cb09f
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
+* Sun May 30 2021 Sérgio Basto <sergio@serjux.com> - 0.2-16.20210530.d1cb09f
+- Update to lpf-0.2.20210530.d1cb09f
+
 * Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 0.2-15.f1f5dd9
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
