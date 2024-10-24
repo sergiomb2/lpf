@@ -23,7 +23,7 @@ done
 
 (( ${#good_rpms} == 0 )) && { echo "$0: Nothing to install" >&2; exit 1; }
 
-dnf -y --allowerasing install ${good_rpms[@]}
+dnf -y install ${good_rpms[@]}
 
 
 # vim: set expandtab ts=4 sw=4:
