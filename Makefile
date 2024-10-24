@@ -30,9 +30,9 @@ install:
 	cp -a icons/*.png $(DESTDIR)$(DATADIR)/lpf/icons
 	rm -f  $(DESTDIR)$(DATADIR)/lpf/scripts/pylint.conf
 	cp -ar scripts CONFIG version $(DESTDIR)$(DATADIR)/lpf
-	ln -s $(DATADIR)/lpf/scripts/lpf $(DESTDIR)$(BINDIR)/lpf
-	ln -s $(DATADIR)/lpf/scripts/lpf-gui $(DESTDIR)$(BINDIR)/lpf-gui
-	ln -s $(DATADIR)/lpf/scripts/lpf-kill-pgroup \
+	ln -sr $(DATADIR)/lpf/scripts/lpf $(DESTDIR)$(BINDIR)/lpf
+	ln -sr $(DATADIR)/lpf/scripts/lpf-gui $(DESTDIR)$(BINDIR)/lpf-gui
+	ln -sr $(DATADIR)/lpf/scripts/lpf-kill-pgroup \
 	    $(DESTDIR)/$(LIBEXECDIR)/lpf-kill-pgroup
 
 	for size in 24 32 48 64 128; do \
