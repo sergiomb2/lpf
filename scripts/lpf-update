@@ -127,7 +127,7 @@ function get_to_update()
     if [ -z "${states[*]}" ]; then
         ( unset LPF_UPDATE || :
           info "Nothing to update" \
-            "All lpf packages built and installed"
+            "All LPF packages have been built and installed."
         )
         $scriptdir/lpf-kill-pgroup
     fi
